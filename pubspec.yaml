@@ -1,0 +1,41 @@
+name: money_tracker
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  path_provider: ^2.1.2
+  fl_chart: ^0.68.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.png"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/250.jpg
+    - assets/500.jpg
+    - assets/1000.jpg
+    - assets/5000.jpg
+
+  fonts:
+    - family: NotoArabic
+      fonts:
+        - asset: assets/fonts/NotoSansArabic-Regular.ttf
