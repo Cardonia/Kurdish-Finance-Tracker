@@ -115,21 +115,22 @@ class _EditScreenState extends State<EditScreen> {
                       style: TextStyle(fontWeight: FontWeight.bold)))
               : ListView.builder(
                   itemCount: _items.length,
-                  // Tells Flutter the approximate height so it can skip
-                  // layout calculations for off-screen items
                   itemExtent: 72,
                   itemBuilder: (context, index) {
-                    final item = _items[index];
+                    // Show newest item first
+                    final originalIndex = _items.length - 1 - index;
+                    final item = _items[originalIndex];
+
                     return _RecordTile(
                       key: ValueKey(Object.hashAll(item)),
                       amount: item[0],
                       date: item[1],
                       type: item.length > 2 ? item[2] : '',
-                      onEdit: () => _editItem(index),
-                      onDelete: () => _deleteItem(index),
+                      onEdit: () => _editItem(originalIndex),
+                      onDelete: () => _deleteItem(originalIndex),
                     );
                   },
-                ),
+                )
     );
   }
 }
