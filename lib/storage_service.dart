@@ -142,11 +142,25 @@ static Future<List<List<String>>> getRecords() async {
       .toList();
 }
 
+static Future<void> _appendLine(String line) async {
+  final file = await _getFile();
+
+  if (await file.exists()) {
+    final content = await file.readAsString();
+    if (content.isNotEmpty && !content.endsWith("\n")) {
+      await file.writeAsString("\n", mode: FileMode.append);
+    }
+  }
+
+  await file.writeAsString("$line\n", mode: FileMode.append);
+}
+
 static Future<void> saveAllRecords(List<List<String>> records) async {
   final file = await _getFile();
 
   final data = records.map((e) => e.join(",")).join("\n");
 
-  await file.writeAsString(data);
+  await file.writeAsString("$data\n");
 }
+
 }

@@ -15,9 +15,9 @@ class _InsertScreenState extends State<InsertScreen> {
   void initState() {
     super.initState();
 
-    // run after UI is shown (no freeze)
+    
     WidgetsBinding.instance.addPostFrameCallback((_) {
-
+      //money imgs
       precacheImage(const AssetImage("assets/250.jpg"), context);
       precacheImage(const AssetImage("assets/500.jpg"), context);
       precacheImage(const AssetImage("assets/1000.jpg"), context);
