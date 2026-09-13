@@ -44,6 +44,7 @@ class _ReportScreenState extends State<PieChartScreen> {
 }
 
   Map<String, double> data = {};
+  double positiveTotal = 0;
 
   @override
   void initState() {
@@ -52,34 +53,53 @@ class _ReportScreenState extends State<PieChartScreen> {
   }
 
   bool inRange(DateTime d) {
-    DateTime now = DateTime.now();
+    final now = DateTime.now();
 
-    if (filter == "week") return now.difference(d).inDays <= 7;
-    if (filter == "month") return now.difference(d).inDays <= 30;
-    if (filter == "year") return now.difference(d).inDays <= 365;
+    final today = DateTime(now.year, now.month, now.day);
+    final date = DateTime(d.year, d.month, d.day);
 
-    return true;
+    int days;
+
+    if (filter == "week") {
+      days = 6;
+    } else if (filter == "month") {
+      days = 29;
+    } else if (filter == "year") {
+      days = 364;
+    } else {
+      return true;
+    }
+
+    final startDate = today.subtract(Duration(days: days));
+
+    return !date.isBefore(startDate) && !date.isAfter(today);
   }
 
   Future<void> load() async {
     final rows = await StorageService.getRecords();
 
     Map<String, double> temp = {};
+    double positive = 0;
 
     for (var r in rows) {
-      if (r.length < 3) continue;
+      if (r.length < 2) continue;
 
-      int value = int.tryParse(r[0]) ?? 0;
-      DateTime date = DateTime.parse(r[1]);
-      String type = r[2].isEmpty ? "نەناسراو" : r[2];
+      int value = int.tryParse(r[0].trim()) ?? 0;
+      DateTime date = DateTime.parse(r[1].trim());
+      String type = r.length >= 3 && r[2].isNotEmpty ? r[2] : "نەناسراو";
 
       if (!inRange(date)) continue;
 
-      temp[type] = (temp[type] ?? 0) + value.abs();
+      if (value < 0) {
+        temp[type] = (temp[type] ?? 0) + value.abs();
+      } else if (value > 0) {
+        positive += value;
+      }
     }
 
     setState(() {
       data = temp;
+      positiveTotal = positive;
     });
   }
 List<PieChartSectionData> chart(Map<String, Color> colorMap) {
@@ -156,8 +176,12 @@ List<PieChartSectionData> chart(Map<String, Color> colorMap) {
 
           const SizedBox(height: 20),
             Text(
-                "سەرجەم: $total ",
+                "کۆی گشتی خەرجکراو: $total ",
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "کۆی گشتی کۆکراوەتەوە: $positiveTotal",
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           Expanded(
             child: data.isEmpty
